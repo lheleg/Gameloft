@@ -33,6 +33,23 @@ class GameData {
                     "The Sims is a life-building simulation with emphasis on intimate details of individual characters rather than expansion of an entire society or civilization. You are in control of nearly every aspect of the lives of the individuals who make up your chosen population in the neighborhood.",
                     listOf(UserRating("mani__",  LocalDateTime.of(2001, 3, 1, 10, 30, 0).toInstant(java.time.ZoneOffset.UTC).toEpochMilli(), 4.5),
                         UserReview("hani23", LocalDateTime.of(2016, 12, 2, 17, 36, 55).toInstant(java.time.ZoneOffset.UTC).toEpochMilli(),"Best game. You can simulate anything that you want."))),
+                Game("Call of Duty", "PlayStation/PC/Xbox", "13.11.2020", 3.2, "callofd", "Mature 18+", "Activison", "Activision", "Action",
+                    "Call of Duty: Black Ops Cold War is set during the Cold War in the early 1980s. The campaign follows Green Beret turned CIA SAD/SOG officer Russell Adler (Bruce Thomas) and his mission to stop an international espionage threat named Perseus (William Salyers) in 1981.",
+                    listOf(UserRating("jasko22",  LocalDateTime.of(2022, 1, 21, 10, 40, 0).toInstant(java.time.ZoneOffset.UTC).toEpochMilli(), 3.5))),
+                Game("GTA V", "PlayStation,PC,Xbox", "17.09.2013", 4.6, "gta", "Mature 17+", "Rockstar Games", "Rockstar Games", "Third-person action game",
+                "Grand Theft Auto V is an action-adventure game played from either a third-person or first-person perspective. Players complete missions—linear scenarios with set objectives—to progress through the story.",
+                    listOf(UserReview("hsel23", LocalDateTime.of(2017, 12, 2, 17, 36, 55).toInstant(java.time.ZoneOffset.UTC).toEpochMilli(),"Not that good, not that bad."))),
+                Game("FIFA 23", "PlayStation,PC", "27.09.2022", 2.2, "fifa", "Everyone", "EA Sports", "EA", "Sports",
+                    "FIFA 23 features both men's and women's World Cup game modes, replicating the 2022 FIFA World Cup and the 2023 FIFA Women's World Cup.",
+                    listOf(UserReview("sams8",  LocalDateTime.of(2023, 1, 2, 17, 36, 55).toInstant(java.time.ZoneOffset.UTC).toEpochMilli(), "A really nice game to play with friends"))),
+                Game("F1 22", "PlayStation/PC/Xbox", "28.06.2022", 3.4, "formula", "Everyone", "Codemasters", "EA Sports", "Racing",
+                "F1 22 is a racing video game that simulates the official Formula 1 championship. It is the official game of the Formula 1",
+                    listOf(UserRating("xxaust",  LocalDateTime.of(2023, 1, 13, 11, 30, 0).toInstant(java.time.ZoneOffset.UTC).toEpochMilli(), 4.5))
+                ),
+                Game("World of Warcraft", "PC", "23.11.2004", 3.6, "worldofw", "Teen", "Blizzard Entertainment", "Blizzard Entertainment", "Action",
+                    "Set in the fictional world of Azeroth, WoW allows players to create avatar-style characters and explore a sprawling universe while interacting with nonreal players—called nonplayer characters (NPCs)—and other real-world players (PCs)",
+                    listOf(UserRating("lindaxx",  LocalDateTime.of(2020, 12, 13, 11, 20, 0).toInstant(java.time.ZoneOffset.UTC).toEpochMilli(), 4.0))
+                )
             )
         }
 
