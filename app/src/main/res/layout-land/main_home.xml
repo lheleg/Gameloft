@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HomeActivity">
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_home_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/navigation" />
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_detail_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/navigation" />
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:layout_height="60dp"
+        android:layout_width="match_parent"
+        android:id="@+id/bottom_nav"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/nav_home_fragment"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/menu" />
+</LinearLayout>

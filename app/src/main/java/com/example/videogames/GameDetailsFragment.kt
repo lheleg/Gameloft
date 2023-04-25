@@ -3,16 +3,20 @@ package com.example.videogames
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.videogames.GameData.Companion.getAll
-import com.example.videogames.GameData.Companion.getDetails
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class GameDetailsActivity : AppCompatActivity() {
+class GameDetailsFragment : Fragment() {
     private lateinit var game: Game
     private lateinit var title : TextView
     private lateinit var cover : ImageView
@@ -23,47 +27,37 @@ class GameDetailsActivity : AppCompatActivity() {
     private lateinit var publisher : TextView
     private lateinit var genre : TextView
     private lateinit var description : TextView
-    private lateinit var homeButton : Button
-    private lateinit var detailsButton : Button
     private lateinit var impressions: RecyclerView
     private lateinit var impressionAdapter: UserImpressionAdapter
     private var impressionsList = listOf<UserImpression>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_game_detail)
-        title = findViewById(R.id.game_title_textview)
-        platform = findViewById(R.id.platform_textview)
-        realiseDate = findViewById(R.id.release_date)
-        esrbRating = findViewById(R.id.esrb_rating_textview)
-        developer = findViewById(R.id.developer_textview)
-        publisher = findViewById(R.id.publisher_textview)
-        genre = findViewById(R.id.genre_textview)
-        description = findViewById(R.id.description_textview)
-        homeButton = findViewById(R.id.home_button)
-        detailsButton = findViewById(R.id.details_button)
-        cover = findViewById(R.id.cover_imageview)
-        impressions = findViewById(R.id.user_impression_list)
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        var view = inflater.inflate(R.layout.activity_game_detail, container, false)
+        title = view.findViewById(R.id.item_title_textview)
+        platform = view.findViewById(R.id.platform_textview)
+        realiseDate = view.findViewById(R.id.release_date)
+        esrbRating = view.findViewById(R.id.esrb_rating_textview)
+        developer = view.findViewById(R.id.developer_textview)
+        publisher = view.findViewById(R.id.publisher_textview)
+        genre = view.findViewById(R.id.genre_textview)
+        description = view.findViewById(R.id.description_textview)
+        cover = view.findViewById(R.id.cover_imageview)
+        impressions = view.findViewById(R.id.user_impression_list)
         impressions.layoutManager = LinearLayoutManager(
-            this,
+            activity,
             LinearLayoutManager.VERTICAL,
             false
         )
-        val extras = intent.extras
-        if (extras != null) {
-            game = getGameByTitle(extras.getString("game_title_textview",""))
+        arguments?.getString("title")?.let {
+            game = getGameByTitle(it)
             populateDetails()
-        } else {
-            finish()
-        }
-        homeButton.setOnClickListener{
-            val intent = Intent(this, HomeActivity::class.java).apply {
-            putExtra("ENABLE", "YES")}
-            startActivity(intent)
         }
         impressionAdapter = UserImpressionAdapter(arrayListOf())
         impressions.adapter = impressionAdapter
         impressionAdapter.updateImpressions(impressionsList)
+        return view;
     }
     private fun populateDetails() {
         title.text = game.title
@@ -84,8 +78,8 @@ class GameDetailsActivity : AppCompatActivity() {
     }
     private fun getGameByTitle(name:String): Game{
         val games: ArrayList<Game> = arrayListOf()
-        games.addAll(getAll())
-        val game = getDetails(name)
+        games.addAll(GameData.getAll())
+        val game = GameData.getDetails(name)
         return game?: Game("Test","Test","Test",0.0,"Test","Test","Test", "Test", "Test", "Test", listOf())
     }
 }
