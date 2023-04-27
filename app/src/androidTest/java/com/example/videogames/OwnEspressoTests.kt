@@ -10,7 +10,6 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.uiautomator.UiDevice
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.Assert.assertFalse
 import org.junit.Before
@@ -21,18 +20,6 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class OwnEspressoTests {
 
-
-    /* U ovom scenariju testira se dizajn i performanse aplikacije u Portrait orijentaciji.
-    * Najprije provjeravamo raspored elemenata u Home fragmentu (koji se prikazuje pri pokretanju aplikacije u Portrait orijentaciji),
-    * zatim raspored i tacnosti prikazanih podataka konkretno za igricu pod rednim brojem 1 (na home su prikazani title, release date i rating).
-    * Provjeravamo da li je bottom navigation onemogućen. Zatim ispitujemo regularnost prelazenja iz jednog u drugi fragment, nakon klika na
-    * pomenutu igricu. Provjeravamo novi raspored elemenata u GameDetails fragmentu, zatim se navigacijom (dio homeItem) vraćamo na home, te se
-    * navigacijom (dio detailsItem) vracamo na detalje, gdje provjeravamo da li su ispisani detalji za igricu koja je posljednja otvorena,
-    * u konkrentnom slucaju za igricu pod rednim brojem 1.
-    * */
-
-    private lateinit var device: UiDevice
-
     @get:Rule
     var activityRule : ActivityScenarioRule<HomeActivity> = ActivityScenarioRule(HomeActivity::class.java)
 
@@ -40,9 +27,21 @@ class OwnEspressoTests {
     fun setToPortrait() {
         activityRule.scenario.onActivity { activity ->activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT }
     }
+
     fun setToLandscape() {
         activityRule.scenario.onActivity { activity ->activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }
     }
+
+    /* U ovom scenariju testira se dizajn i performanse aplikacije u Portrait orijentaciji.
+    * Najprije provjeravamo raspored elemenata u Home fragmentu (koji se prikazuje pri pokretanju aplikacije u Portrait orijentaciji),
+    * zatim raspored i tacnosti prikazanih podataka konkretno za igricu pod rednim brojem 1 (na home su prikazani title, release date i rating).
+    * Provjeravamo da li je bottom navigation onemogućen. Zatim ispitujemo regularnost prelazenja iz jednog u drugi fragment, nakon klika na
+    * pomenutu igricu. Provjeravamo novi raspored elemenata u GameDetails fragmentu, zatim se navigacijom (dio homeItem) vraćamo na home, te se
+    * navigacijom (dio detailsItem) vracamo na detalje, gdje provjeravamo da li su ispisani detalji za igricu koja je posljednja otvorena,
+    * u konkrentnom slucaju za igricu pod rednim brojem 1. Koristenjem navigacije takodjer smo provjerili da li je bottom navigation omogucen, jer treba
+    * biti nakon selektovanje neke igrice. Treba napomenuti da se vrsi provjera podataka koji su specificni za pojedine fragmente, to je npr. rating za
+    * Home i genre i esrbRating za GamesDetail.
+    * */
 
     @Test
     fun prviScenario(){
