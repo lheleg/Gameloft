@@ -2,7 +2,6 @@ package com.example.videogames
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -16,6 +15,7 @@ class HomeActivity : AppCompatActivity() {
             val navHostFragment =
                 supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
             val navController = navHostFragment.navController
+            navController.navigate(R.id.homeItem)
             val navView: BottomNavigationView = findViewById(R.id.bottom_nav)
             navView.setupWithNavController(navController)
         }else if(resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){

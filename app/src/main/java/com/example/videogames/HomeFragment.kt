@@ -1,6 +1,5 @@
 package com.example.videogames
 
-import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -24,16 +23,17 @@ class HomeFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.activity_home, container, false)
-
         games = view.findViewById(R.id.game_list)
         games.layoutManager = LinearLayoutManager(
             activity,
             LinearLayoutManager.VERTICAL,
             false
         )
-        nav = requireActivity().findViewById(R.id.bottom_nav)
-        homeItem = nav.menu.findItem(R.id.homeItem)
-        detailsItem = nav.menu.findItem(R.id.gameDetailsItem)
+        if(resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            nav = requireActivity().findViewById(R.id.bottom_nav)
+            homeItem = nav.menu.findItem(R.id.homeItem)
+            detailsItem = nav.menu.findItem(R.id.gameDetailsItem)
+        }
         gamesAdapter = GameListAdapter(arrayListOf()) { game -> showGameDetails(game) }
         games.adapter = gamesAdapter
         gamesAdapter.updateGames(gamesList)
@@ -46,8 +46,9 @@ class HomeFragment : Fragment() {
         if(resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
             val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
             val navController = navHostFragment.navController
-            detailsItem.isEnabled = true
             homeItem.isEnabled = true
+            detailsItem.isEnabled = true
+
             nav.selectedItemId = R.id.gameDetailsItem
             navController.navigate(R.id.gameDetailsItem, bundle)
         }
