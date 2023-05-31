@@ -1,4 +1,4 @@
-package com.example.videogames
+package ba.etf.rma23.projekat
 
 import android.content.Context
 import android.os.Bundle
@@ -10,7 +10,6 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
 class GameDetailsFragment : Fragment() {
     private lateinit var game: Game
     private lateinit var title : TextView
@@ -63,7 +62,7 @@ class GameDetailsFragment : Fragment() {
         publisher.text = game.publisher
         genre.text = game.genre
         description.text = game.description
-        impressionsList = game.userImpressions.sortedByDescending { it.timestamp }
+        impressionsList = game.userImpressions?.sortedByDescending { it.timestamp } ?: emptyList()
         val context: Context = cover.context
         var id: Int = context.resources
             .getIdentifier(game.coverImage, "drawable", context.packageName)
@@ -71,7 +70,7 @@ class GameDetailsFragment : Fragment() {
             .getIdentifier("picture1", "drawable", context.packageName)
         cover.setImageResource(id)
     }
-    private fun getGameByTitle(name:String): Game{
+    private fun getGameByTitle(name:String): Game {
         val games: ArrayList<Game> = arrayListOf()
         games.addAll(GameData.getAll())
         val game = GameData.getDetails(name)

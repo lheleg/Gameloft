@@ -1,4 +1,4 @@
-package com.example.videogames
+package ba.etf.rma23.projekat
 
 import android.content.pm.ActivityInfo
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
@@ -21,7 +21,7 @@ import org.junit.runner.RunWith
 class OwnEspressoTests {
 
     @get:Rule
-    var activityRule : ActivityScenarioRule<HomeActivity> = ActivityScenarioRule(HomeActivity::class.java)
+    var activityRule : ActivityScenarioRule<MainActivity> = ActivityScenarioRule(MainActivity::class.java)
 
     @Before
     fun setToPortrait() {

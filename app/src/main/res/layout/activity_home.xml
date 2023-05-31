@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeActivity"
+    tools:context="ba.etf.rma23.projekat.MainActivity"
     tools:layout_editor_absoluteY="81dp">
 
     <LinearLayout
@@ -27,12 +27,16 @@
             android:ems="10"
             android:text="@string/search" />
 
-        <Button
+        <ImageButton
             android:id="@+id/search_button"
-            android:layout_width="45dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@android:drawable/ic_menu_search" />
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="8dp"
+            android:background="?android:attr/actionModeWebSearchDrawable"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/search_query_edittext"
+            app:layout_constraintTop_toTopOf="parent" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

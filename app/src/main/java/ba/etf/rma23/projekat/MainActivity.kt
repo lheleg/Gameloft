@@ -1,4 +1,4 @@
-package com.example.videogames
+package ba.etf.rma23.projekat
 
 import android.content.res.Configuration
 import android.os.Bundle
@@ -7,7 +7,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class HomeActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if(resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {

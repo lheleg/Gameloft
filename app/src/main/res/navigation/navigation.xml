@@ -5,10 +5,10 @@
     app:startDestination="@id/homeItem">
     <fragment
         android:id="@+id/homeItem"
-        android:name="com.example.videogames.HomeFragment"
+        android:name="ba.etf.rma23.projekat.HomeFragment"
         android:label="HomeFragment" />
     <fragment
         android:id="@+id/gameDetailsItem"
-        android:name="com.example.videogames.GameDetailsFragment"
+        android:name="ba.etf.rma23.projekat.GameDetailsFragment"
         android:label="GameDetailsFragment" />
 </navigation>
