@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
             navView.setupWithNavController(navController)
         }else if(resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
             setContentView(R.layout.main_home)
-            val game = GameData.getAll()
+            val game = emptyList<Game>()
             val navHostFragment =
                 supportFragmentManager.findFragmentById(R.id.nav_home_fragment) as NavHostFragment
             val navController = navHostFragment.navController

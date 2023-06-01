@@ -64,7 +64,7 @@ class GameData {
         }
 
         fun getDetails(title:String): Game? {
-            val list = getAll()
+            val list = emptyList<Game>()
             for (item in list) {
                 if (item.title == title) return item
             }

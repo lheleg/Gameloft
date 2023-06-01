@@ -72,7 +72,7 @@ class GameDetailsFragment : Fragment() {
     }
     private fun getGameByTitle(name:String): Game {
         val games: ArrayList<Game> = arrayListOf()
-        games.addAll(GameData.getAll())
+        games.addAll(emptyList())
         val game = GameData.getDetails(name)
         return game?: Game("Test","Test","Test",0.0,"Test","Test","Test", "Test", "Test", "Test", listOf())
     }

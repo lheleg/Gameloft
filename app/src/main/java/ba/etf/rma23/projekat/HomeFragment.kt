@@ -13,7 +13,9 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import ba.etf.rma23.projekat.data.repositories.AccountGamesRepository
 import ba.etf.rma23.projekat.data.repositories.GamesRepository
+import ba.etf.rma23.projekat.data.repositories.GetSwaggerResponse
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +25,7 @@ import kotlinx.coroutines.launch
 class HomeFragment : Fragment() {
     private lateinit var games: RecyclerView
     private lateinit var gamesAdapter: GameListAdapter
-    private var gamesList = GameData.getAll()
+
     private lateinit var nav: BottomNavigationView
     private lateinit var homeItem: MenuItem
     private lateinit var detailsItem: MenuItem
@@ -52,15 +54,38 @@ class HomeFragment : Fragment() {
         searchButton.setOnClickListener{
             onClick();
         }
+        getFavorites()
         gamesAdapter = GameListAdapter(arrayListOf()) { game -> showGameDetails(game) }
         games.adapter = gamesAdapter
-        gamesAdapter.updateGames(gamesList)
         return view
     }
     private fun onClick() {
         val toast = Toast.makeText(context, "Search start", Toast.LENGTH_SHORT)
         toast.show()
         search(searchText.text.toString())
+    }
+    fun getFavorites(){
+        val scope = CoroutineScope(Job() + Dispatchers.Main)
+        // Create a new coroutine on the UI thread
+        scope.launch{
+            // Opcija 1
+            val result = AccountGamesRepository.getSavedGames()
+            // Display result of the network request to the user
+            when (result) {
+                is List<Game> -> onSuccess1(result)
+                else-> onError1()
+            }
+        }
+    }
+
+    fun onSuccess1(games : List<Game>){
+        val toast = Toast.makeText(context, "Favorite done", Toast.LENGTH_SHORT)
+        toast.show()
+        gamesAdapter.updateGames(games)
+    }
+    fun onError1() {
+        val toast = Toast.makeText(context, "Favorite error", Toast.LENGTH_SHORT)
+        toast.show()
     }
     fun search(query : String){
         val scope = CoroutineScope(Job() + Dispatchers.Main)
@@ -70,7 +95,7 @@ class HomeFragment : Fragment() {
             val result = GamesRepository.getGamesByName(query)
             // Display result of the network request to the user
             when (result) {
-                is List -> onSuccess(result)
+                is List<Game> -> onSuccess(result)
                 else-> onError()
             }
         }
@@ -87,7 +112,7 @@ class HomeFragment : Fragment() {
 
     private fun showGameDetails(game: Game) {
         val bundle = Bundle().apply {
-            putString("title", game.title)
+            putString("title", searchText.text.toString())
         }
         if(resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
             val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
