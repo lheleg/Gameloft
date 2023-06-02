@@ -1,6 +1,7 @@
 package ba.etf.rma23.projekat.data.repositories
 
 import ba.etf.rma23.projekat.data.repositories.AccountGamesRepository.getHash
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -15,11 +16,12 @@ interface Api {
         @Query("limit") limit : Int = 11
     ): Response<List<GetGameResponse>>
 
-    @GET("games/{id}")
+    @POST("games/")
     suspend fun getGamesById(
-        @Path("id") id: Int,
-        @Query("fields") fields : String = "id,name,platforms.name,release_dates.human,rating,cover.url,genres.name,summary,age_ratings.category",
-    ): Response<GetGameResponse>
+        @Header("Client-ID") client_id : String,
+        @Header("Authorization") autho : String,
+        @Body body : RequestBody
+    ): Response<List<GetGameResponse>>
 
     @Headers("Content-Type: application/json")
 
