@@ -36,7 +36,7 @@ class HomeFragment : Fragment() {
         arguments?.getString("search")?.let {
             searchText.setText(it)
         }
-        searchButton = view.findViewById(R.id.search_button)
+        searchButton = view.findViewById(R.id.save_button)
         games.layoutManager = LinearLayoutManager(
             activity,
             LinearLayoutManager.VERTICAL,
@@ -51,7 +51,7 @@ class HomeFragment : Fragment() {
             onClick();
         }
 
-        runBlocking { getFavorites() }
+        getFavorites()
         gamesAdapter = GameListAdapter(arrayListOf()) { game -> showGameDetails(game) }
         games.adapter = gamesAdapter
         return view
@@ -61,14 +61,27 @@ class HomeFragment : Fragment() {
         toast.show()
         search(searchText.text.toString())
     }
-    fun getFavorites() = CoroutineScope(Job() + Dispatchers.Main).async{
+    fun getFavorites() = CoroutineScope(Job() + Dispatchers.Main).launch{
             val result = AccountGamesRepository.getSavedGames()
-            when (result) {
-                is List<Game> -> onSuccess1(result)
-                else-> onError1()
-            }
-
+            getFavoritesFromIgdb(result)
     }
+    fun getFavoritesFromIgdb(games : List<Game>) = CoroutineScope(Job() + Dispatchers.Main).launch{
+            for (game in games){
+                val result = game.id?.let { GamesRepository.getGameById(it) }
+                game.title = result?.title
+                game.platform = result?.platform
+                game.releaseDate = result?.releaseDate
+                game.rating = result?.rating
+                game.coverImage = result?.coverImage
+                game.genre = result?.genre
+                game.description = result?.description
+            }
+        when (games) {
+            is List<Game> -> onSuccess1(games)
+            else-> onError1()
+        }
+    }
+
 
     fun onSuccess1(games : List<Game>){
         val toast = Toast.makeText(context, "Favorite done", Toast.LENGTH_SHORT)
@@ -81,39 +94,10 @@ class HomeFragment : Fragment() {
         toast.show()
     }
 
-    fun getFavoritesFromIgdb(games : List<Game>) = CoroutineScope(Job() + Dispatchers.Main).launch{
-            for (game in games){
-                val result = game.id?.let { GamesRepository.getGameById(it) }
-                game.title = result?.title
-                game.platform = result?.platform
-                game.releaseDate = result?.releaseDate
-                game.rating = result?.rating
-                game.coverImage = result?.coverImage
-                game.genre = result?.genre
-                game.description = result?.description
-            }
-
-            onSuccess2(games)
-
-    }
-
-    fun onSuccess2(games: List<Game>){
-            val toast = Toast.makeText(context, "Favorite done", Toast.LENGTH_SHORT)
-            toast.show()
-            gameList = games
-            gamesAdapter.updateGames(games)
-    }
-    fun onError2() {
-        val toast = Toast.makeText(context, "Favorite error", Toast.LENGTH_SHORT)
-        toast.show()
-    }
     fun search(query : String){
         val scope = CoroutineScope(Job() + Dispatchers.Main)
-        // Create a new coroutine on the UI thread
         scope.launch{
-            // Opcija 1
             val result = GamesRepository.getGamesByName(query)
-            // Display result of the network request to the user
             when (result) {
                 is List<Game> -> onSuccess(result)
                 else-> onError()
@@ -123,7 +107,6 @@ class HomeFragment : Fragment() {
     fun onSuccess(games : List<Game>){
         val toast = Toast.makeText(context, "Search done", Toast.LENGTH_SHORT)
         toast.show()
-
         gamesAdapter.updateGames(games)
     }
     fun onError() {

@@ -32,8 +32,13 @@ interface Api {
 
     @POST("account/{aid}/game")
     suspend fun saveGame(
-        @Query("igdb_id") igdb : Int,
-        @Query("name") name : String,
+        @Body body : RequestBody,
         @Path("aid") aid: String = getHash()
     ): Response<GetSwaggerResponse>
+
+    @DELETE("account/{aid}/game/{gid}/")
+    suspend fun removeGame(
+        @Path("gid") gid: Int,
+        @Path("aid") aid: String = getHash()
+    ): Response<GetRemoveResponse>
 }

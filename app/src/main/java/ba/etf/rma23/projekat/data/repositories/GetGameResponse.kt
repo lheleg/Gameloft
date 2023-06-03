@@ -11,7 +11,7 @@ data class GetGameResponse(
     @SerializedName("cover") val cover: Cover?,
     @SerializedName("summary") val summary: String?,
     @SerializedName("age_ratings") val ageRating: List<AgeRating>?,
-    @SerializedName("genre") val genre: List<Genre>?,
+    @SerializedName("genres") val genre: List<Genre>?,
     @SerializedName("involved_companies") val i_companies: List<ICompany>?,
 )
 

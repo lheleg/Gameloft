@@ -1,8 +1,10 @@
 package ba.etf.rma23.projekat.data.repositories
 
 import ba.etf.rma23.projekat.Game
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import ba.etf.rma23.projekat.UserImpression
+import kotlinx.coroutines.*
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
 
 object AccountGamesRepository{
     private var hash: String = "03a94c19-c784-4847-9314-dbc824d0152c"
@@ -31,16 +33,26 @@ object AccountGamesRepository{
         }
     }
 
-    suspend fun saveGame(game : Game): Game = withContext(Dispatchers.IO){
-
-            val response = game?.id?.let { game?.title?.let { it1 ->
-                AccountApiConfig.retrofit.saveGame(it,
-                    it1
-                )
-            } }
-            val responseBody = response?.body()
+    suspend fun saveGame(game: Game): Game?{
+        return withContext(Dispatchers.IO) {
+            val body = "{\n" +
+                    "  \"game\": {\n" +
+                    "    \"igdb_id\": "+game?.id+",\n" +
+                    "    \"name\": \""+game?.title+"\"\n" +
+                    "  }\n" +
+                    "}"
+            val response = AccountApiConfig.retrofit.saveGame(body.toRequestBody("application/json".toMediaType()))
+            val responseBody = response.body()
             val game = Game(responseBody?.title, "","",0.0,"","","", "","","", emptyList(), responseBody?.igdbId)
-            return@withContext game
+        return@withContext game
+        }
+    }
 
+    suspend fun removeGame(id: Int): Boolean = withContext(Dispatchers.IO) {
+            val response = AccountApiConfig.retrofit.removeGame(id)
+            val responseBody = response.body()
+            if (responseBody?.succes == "Games deleted")
+                return@withContext true
+            return@withContext false
     }
 }

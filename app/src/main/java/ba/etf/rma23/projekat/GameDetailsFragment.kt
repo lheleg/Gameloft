@@ -5,12 +5,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import ba.etf.rma23.projekat.data.repositories.AccountGamesRepository
 import ba.etf.rma23.projekat.data.repositories.GamesRepository
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.CoroutineScope
@@ -32,7 +34,8 @@ class GameDetailsFragment : Fragment() {
     private lateinit var impressions: RecyclerView
     private lateinit var impressionAdapter: UserImpressionAdapter
     private var impressionsList = listOf<UserImpression>()
-
+    private lateinit var save_button: ImageButton
+    private lateinit var unsave_button: ImageButton
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -47,6 +50,8 @@ class GameDetailsFragment : Fragment() {
         description = view.findViewById(R.id.description_textview)
         cover = view.findViewById(R.id.cover_imageview)
         impressions = view.findViewById(R.id.user_impression_list)
+        save_button = view.findViewById(R.id.save_button)
+        unsave_button = view.findViewById(R.id.unsave_button)
         impressions.layoutManager = LinearLayoutManager(
             activity,
             LinearLayoutManager.VERTICAL,
@@ -54,6 +59,12 @@ class GameDetailsFragment : Fragment() {
         )
         arguments?.getInt("title")?.let {
             getGame(it)
+        }
+        save_button.setOnClickListener{
+            saveThisGame(game)
+        }
+        unsave_button.setOnClickListener{
+            unsaveThisGame(game)
         }
         impressionAdapter = UserImpressionAdapter(arrayListOf())
         impressions.adapter = impressionAdapter
@@ -79,7 +90,6 @@ class GameDetailsFragment : Fragment() {
             .fallback(id)
             .into(cover);
     }
-
     private fun getGame(id : Int){
         val scope = CoroutineScope(Job() + Dispatchers.Main)
         scope.launch{
@@ -90,7 +100,6 @@ class GameDetailsFragment : Fragment() {
             }
         }
     }
-
     fun onSuccess(game : Game){
         val toast = Toast.makeText(context, "id done", Toast.LENGTH_SHORT)
         toast.show()
@@ -99,6 +108,42 @@ class GameDetailsFragment : Fragment() {
     }
     fun onError() {
         val toast = Toast.makeText(context, "Id error", Toast.LENGTH_SHORT)
+        toast.show()
+    }
+    private fun saveThisGame(game: Game){
+        val scope = CoroutineScope(Job() + Dispatchers.Main)
+        scope.launch{
+            val result = AccountGamesRepository.saveGame(game)
+            if (result?.id == game?.id)
+                onSuccess1()
+            else onError1()
+
+        }
+    }
+    fun onSuccess1(){
+        val toast = Toast.makeText(context, "Game saved to favorites", Toast.LENGTH_SHORT)
+        toast.show()
+    }
+    fun onError1() {
+        val toast = Toast.makeText(context, "Game saving error", Toast.LENGTH_SHORT)
+        toast.show()
+    }
+    private fun unsaveThisGame(game: Game){
+        val scope = CoroutineScope(Job() + Dispatchers.Main)
+        scope.launch{
+            val result = game?.id?.let { AccountGamesRepository.removeGame(it) }
+            if (result == true)
+                onSuccess2()
+            else onError2()
+
+        }
+    }
+    fun onSuccess2(){
+        val toast = Toast.makeText(context, "Game deleted from favorites", Toast.LENGTH_SHORT)
+        toast.show()
+    }
+    fun onError2() {
+        val toast = Toast.makeText(context, "Game deleting error", Toast.LENGTH_SHORT)
         toast.show()
     }
 }
