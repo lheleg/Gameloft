@@ -1,6 +1,7 @@
 package ba.etf.rma23.projekat
 
 data class Game(
+    val id : Int?=0,
     var title: String?,
     var platform: String?,
     var releaseDate: String?,
@@ -11,7 +12,6 @@ data class Game(
     var publisher: String?,
     var genre: String?,
     var description: String?,
-    val userImpressions: List<UserImpression>?,
-    val id : Int?=0
+    val userImpressions: List<UserImpression>?
 )
 

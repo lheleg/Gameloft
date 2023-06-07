@@ -50,7 +50,7 @@ class GameDetailsFragment : Fragment() {
         description = view.findViewById(R.id.description_textview)
         cover = view.findViewById(R.id.cover_imageview)
         impressions = view.findViewById(R.id.user_impression_list)
-        save_button = view.findViewById(R.id.save_button)
+        save_button = view.findViewById(R.id.search_button)
         unsave_button = view.findViewById(R.id.unsave_button)
         impressions.layoutManager = LinearLayoutManager(
             activity,
@@ -131,11 +131,10 @@ class GameDetailsFragment : Fragment() {
     private fun unsaveThisGame(game: Game){
         val scope = CoroutineScope(Job() + Dispatchers.Main)
         scope.launch{
-            val result = game?.id?.let { AccountGamesRepository.removeGame(it) }
+            val result = AccountGamesRepository.removeGame(game?.id)
             if (result == true)
                 onSuccess2()
             else onError2()
-
         }
     }
     fun onSuccess2(){

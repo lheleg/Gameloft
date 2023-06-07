@@ -12,8 +12,7 @@ interface Api {
     @GET("games/")
     suspend fun getGamesByName(
         @Query("search") name : String,
-        @Query("fields") fields : String = "id,name,platforms.name,release_dates.human,rating,cover.url,genres.name,summary,age_ratings.category",
-        @Query("limit") limit : Int = 11
+        @Query("fields") fields : String = "id,name,platforms.name,release_dates.human,rating,cover.url,genres.name,summary,age_ratings.rating,age_ratings.category;"
     ): Response<List<GetGameResponse>>
 
     @POST("games/")

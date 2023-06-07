@@ -14,6 +14,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ba.etf.rma23.projekat.data.repositories.AccountGamesRepository
+import ba.etf.rma23.projekat.data.repositories.AccountGamesRepository.getAge
+import ba.etf.rma23.projekat.data.repositories.AccountGamesRepository.setAge
 import ba.etf.rma23.projekat.data.repositories.GamesRepository
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.*
@@ -27,6 +29,10 @@ class HomeFragment : Fragment() {
     private lateinit var detailsItem: MenuItem
     private lateinit var searchText: EditText
     private lateinit var searchButton: AppCompatImageButton
+    private lateinit var searchFavoritesButton: AppCompatImageButton
+    private lateinit var ageButton: AppCompatImageButton
+    private lateinit var safeButton: AppCompatImageButton
+    private lateinit var sortButton: AppCompatImageButton
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -36,7 +42,11 @@ class HomeFragment : Fragment() {
         arguments?.getString("search")?.let {
             searchText.setText(it)
         }
-        searchButton = view.findViewById(R.id.save_button)
+        searchButton = view.findViewById(R.id.search_button)
+        searchFavoritesButton = view.findViewById(R.id.search_favorites_button)
+        ageButton = view.findViewById(R.id.age_button)
+        safeButton = view.findViewById(R.id.safe_button)
+        sortButton = view.findViewById(R.id.sort_button)
         games.layoutManager = LinearLayoutManager(
             activity,
             LinearLayoutManager.VERTICAL,
@@ -48,9 +58,20 @@ class HomeFragment : Fragment() {
             detailsItem = nav.menu.findItem(R.id.gameDetailsItem)
         }
         searchButton.setOnClickListener{
-            onClick();
+            onClick()
         }
-
+        searchFavoritesButton.setOnClickListener{
+            onClickFavorites()
+        }
+        ageButton.setOnClickListener{
+            onClickSetAge()
+        }
+        safeButton.setOnClickListener{
+            onClickSafety()
+        }
+        sortButton.setOnClickListener{
+            onClickSort()
+        }
         getFavorites()
         gamesAdapter = GameListAdapter(arrayListOf()) { game -> showGameDetails(game) }
         games.adapter = gamesAdapter
@@ -61,28 +82,75 @@ class HomeFragment : Fragment() {
         toast.show()
         search(searchText.text.toString())
     }
+    private fun onClickFavorites() {
+        val toast = Toast.makeText(context, "Search favorites start", Toast.LENGTH_SHORT)
+        toast.show()
+        searchFavorites(searchText.text.toString())
+    }
+    private fun onClickSetAge() {
+        try {
+            val ageSet = setAge(searchText.text.toString().toInt())
+            if (!ageSet) throw Exception()
+        }catch(e: Exception) {
+            val toast = Toast.makeText(context, "Wrong input", Toast.LENGTH_SHORT)
+            toast.show()
+        }
+    }
+    private fun onClickSafety() {
+        val toast = Toast.makeText(context, "Search start", Toast.LENGTH_SHORT)
+        toast.show()
+        removeNonsafeGames()
+    }
+    private fun onClickSort() {
+        val toast = Toast.makeText(context, "Search start", Toast.LENGTH_SHORT)
+        toast.show()
+        sortCurrentGames()
+    }
+
+    private fun sortCurrentGames(){
+        val scope = CoroutineScope(Job() + Dispatchers.Main)
+        scope.launch{
+            val result = GamesRepository.sortGames()
+            when (result) {
+                is List<Game> -> onSuccess4(result)
+                else -> onError4()
+            }
+        }
+    }
+    fun onSuccess4(games: List<Game>){
+        val toast = Toast.makeText(context, "Games sorted", Toast.LENGTH_SHORT)
+        toast.show()
+        gamesAdapter.updateGames(games)
+    }
+    fun onError4() {
+        val toast = Toast.makeText(context, "Game sorting error", Toast.LENGTH_SHORT)
+        toast.show()
+    }
+    private fun removeNonsafeGames(){
+        val scope = CoroutineScope(Job() + Dispatchers.Main)
+        scope.launch{
+            val result = AccountGamesRepository.removeNonSafe()
+            if (result)
+                onSuccess3()
+            else onError3()
+        }
+    }
+    fun onSuccess3(){
+        val toast = Toast.makeText(context, "Nonsafe games deleted", Toast.LENGTH_SHORT)
+        toast.show()
+        getFavorites()
+    }
+    fun onError3() {
+        val toast = Toast.makeText(context, "Game deleting error", Toast.LENGTH_SHORT)
+        toast.show()
+    }
     fun getFavorites() = CoroutineScope(Job() + Dispatchers.Main).launch{
             val result = AccountGamesRepository.getSavedGames()
-            getFavoritesFromIgdb(result)
-    }
-    fun getFavoritesFromIgdb(games : List<Game>) = CoroutineScope(Job() + Dispatchers.Main).launch{
-            for (game in games){
-                val result = game.id?.let { GamesRepository.getGameById(it) }
-                game.title = result?.title
-                game.platform = result?.platform
-                game.releaseDate = result?.releaseDate
-                game.rating = result?.rating
-                game.coverImage = result?.coverImage
-                game.genre = result?.genre
-                game.description = result?.description
-            }
-        when (games) {
-            is List<Game> -> onSuccess1(games)
+        when (result) {
+            is List<Game> -> onSuccess1(result)
             else-> onError1()
         }
     }
-
-
     fun onSuccess1(games : List<Game>){
         val toast = Toast.makeText(context, "Favorite done", Toast.LENGTH_SHORT)
         toast.show()
@@ -97,7 +165,14 @@ class HomeFragment : Fragment() {
     fun search(query : String){
         val scope = CoroutineScope(Job() + Dispatchers.Main)
         scope.launch{
-            val result = GamesRepository.getGamesByName(query)
+            val age = getAge()
+            var result = emptyList<Game>()
+            if (age != null) {
+                if(age < 18)
+                    result = GamesRepository.getGamesSafe(query)!!
+                else if(age >= 18)
+                    result = GamesRepository.getGamesByName(query)!!
+            }
             when (result) {
                 is List<Game> -> onSuccess(result)
                 else-> onError()
@@ -113,8 +188,27 @@ class HomeFragment : Fragment() {
         val toast = Toast.makeText(context, "Search error", Toast.LENGTH_SHORT)
         toast.show()
     }
+    fun searchFavorites(query : String){
+        val scope = CoroutineScope(Job() + Dispatchers.Main)
+        scope.launch{
+            val result = AccountGamesRepository.getGamesContainingString(query)
+            when (result) {
+                is List<Game> -> onSuccess2(result)
+                else-> onError2()
+            }
+        }
+    }
+    fun onSuccess2(games : List<Game>){
+        val toast = Toast.makeText(context, "Search done", Toast.LENGTH_SHORT)
+        toast.show()
+        gamesAdapter.updateGames(games)
+    }
+    fun onError2() {
+        val toast = Toast.makeText(context, "Search error", Toast.LENGTH_SHORT)
+        toast.show()
+    }
 
-    private fun showGameDetails(game: Game) {
+    fun showGameDetails(game: Game) {
         val bundle = Bundle().apply {
             game.id?.let { putInt("title", it) }
         }

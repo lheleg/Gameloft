@@ -50,7 +50,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageButton
-                    android:id="@+id/save_button"
+                    android:id="@+id/search_button"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_marginStart="300dp"
