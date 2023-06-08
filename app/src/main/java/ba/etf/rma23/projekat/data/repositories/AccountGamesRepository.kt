@@ -7,7 +7,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 
 object AccountGamesRepository{
-    private var hash: String = "03a94c19-c784-4847-9314-dbc824d0152c"
+    private var hash: String = ""
     private var age: Int? = null
 
     fun setHash(acHash : String): Boolean{
@@ -104,7 +104,7 @@ object AccountGamesRepository{
         val games = getSavedGames()
         for (g in games) {
             val game = g.id?.let { getGameById(it) }
-            if (game?.esrbRating == "5" || game?.esrbRating == "12") {
+            if (game?.esrbRating == "5" || game?.esrbRating == "12" || game?.esrbRating == "11") {
                 val response = game?.id?.let { AccountApiConfig.retrofit.removeGame(it) }
                 val responseBody = response?.body()
                 if (responseBody?.success != "Games deleted")
