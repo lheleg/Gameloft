@@ -66,8 +66,8 @@ object AccountGamesRepository{
                     "}"
             val response = AccountApiConfig.retrofit.saveGame(body.toRequestBody("application/json".toMediaType()))
             val responseBody = response.body()
-            val game = Game(responseBody?.igdbId,responseBody?.title, "","",0.0,"","","", "","","", emptyList())
-        return@withContext game
+            val game = Game(responseBody?.igdbId,responseBody?.title, "","",0.0,"",null,"", "","","", emptyList())
+            return@withContext game
         }
     }
 
@@ -99,19 +99,28 @@ object AccountGamesRepository{
         GamesRepository.displeyedGames = temp
         return temp
     }
-
     suspend fun removeNonSafe(): Boolean = withContext(Dispatchers.IO) {
         val games = getSavedGames()
+        val age = getAge()
         for (g in games) {
             val game = g.id?.let { getGameById(it) }
-            if (game?.esrbRating == "5" || game?.esrbRating == "12" || game?.esrbRating == "11") {
-                val response = game?.id?.let { AccountApiConfig.retrofit.removeGame(it) }
-                val responseBody = response?.body()
-                if (responseBody?.success != "Games deleted")
-                    return@withContext false
+            if (game?.esrbRating != "") {
+                if (age == 17 && (game?.esrbRating  == "5" || game?.esrbRating  == "12"))
+                    removeGame(game?.id)
+                else if (age == 16 && (game?.esrbRating  != "5" && game?.esrbRating  != "11" && game?.esrbRating  != "12"))
+                    removeGame(game?.id)
+                else if (age in 13..15 && (game?.esrbRating  == "4" || game?.esrbRating  == "5"|| game?.esrbRating  == "11" || game?.esrbRating  == "12"))
+                    removeGame(game?.id)
+                else if (age == 12 && (game?.esrbRating  == "4" || game?.esrbRating  == "5"|| game?.esrbRating  == "10" || game?.esrbRating  == "11" || game?.esrbRating  == "12"))
+                    removeGame(game?.id)
+                else if (age in 10..11 && (game?.esrbRating  == "3" || game?.esrbRating  == "4" || game?.esrbRating  == "5" || game?.esrbRating  == "10" || game?.esrbRating  == "11" || game?.esrbRating  == "12"))
+                    removeGame(game?.id)
+                else if (age in 7..9 && (game?.esrbRating  == "3" || game?.esrbRating  == "4" || game?.esrbRating  == "5" || game?.esrbRating  == "9" || game?.esrbRating  == "10" || game?.esrbRating  == "11" || game?.esrbRating  == "12"))
+                    removeGame(game?.id)
+                else if (age in 3..6 && (game?.esrbRating  == "2" || game?.esrbRating  == "3" || game?.esrbRating  == "4" || game?.esrbRating  == "5" || game?.esrbRating  == "9" || game?.esrbRating  == "10" || game?.esrbRating  == "11" || game?.esrbRating  == "12"))
+                    removeGame(game?.id)
             }
         }
-            return@withContext true
+        return@withContext true
     }
-
 }

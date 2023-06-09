@@ -69,8 +69,8 @@ object GamesRepository {
             )
         }
     }
-    private fun getAgeRating(ageRating: List<AgeRating>?): String{
-        if (ageRating == null) return ""
+    private fun getAgeRating(ageRating: List<AgeRating>?): String? {
+        if (ageRating == null) return null
         for (i in 0 until ageRating?.size as Int){
             if (ageRating?.get(i)?.category == 2 || ageRating?.get(i)?.category == 1)
                 return ageRating?.get(i)?.rating.toString()
