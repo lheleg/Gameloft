@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ba.etf.rma23.projekat.data.repositories.AccountGamesRepository
+import ba.etf.rma23.projekat.data.repositories.GameReviewsRepository
 import ba.etf.rma23.projekat.data.repositories.GamesRepository
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.CoroutineScope
@@ -33,7 +34,7 @@ class GameDetailsFragment : Fragment() {
     private lateinit var description : TextView
     private lateinit var impressions: RecyclerView
     private lateinit var impressionAdapter: UserImpressionAdapter
-    private var impressionsList = listOf<UserImpression>()
+    private var impressionsList = ArrayList<UserImpression>()
     private lateinit var save_button: ImageButton
     private lateinit var unsave_button: ImageButton
 
@@ -66,12 +67,13 @@ class GameDetailsFragment : Fragment() {
         unsave_button.setOnClickListener{
             unsaveThisGame(game)
         }
-        impressionAdapter = UserImpressionAdapter(arrayListOf())
-        impressions.adapter = impressionAdapter
-        impressionAdapter.updateImpressions(impressionsList)
+
+
+
+
         return view;
     }
-    private fun populateDetails() {
+    private suspend fun populateDetails() {
         title.text = game.title
         platform.text = game.platform
         realiseDate.text = game.releaseDate
@@ -80,7 +82,12 @@ class GameDetailsFragment : Fragment() {
         publisher.text = game.publisher
         genre.text = game.genre
         description.text = game.description
-        impressionsList = game.userImpressions?.sortedByDescending { it.timestamp } ?: emptyList()
+        for (review in game.id?.let { GameReviewsRepository.getReviewsForGame(it) }!!){
+            if (review.rating != null)
+                impressionsList.add(UserRating(review.user!!,0,review.rating!!))
+            if (review.review != null)
+                impressionsList.add(UserReview(review.user!!,0, review.review!!))
+        }
         val context: Context = cover.getContext()
         var id = 0;
         Glide.with(context)
@@ -89,6 +96,9 @@ class GameDetailsFragment : Fragment() {
             .error(id)
             .fallback(id)
             .into(cover);
+        impressionAdapter = UserImpressionAdapter(impressionsList)
+        impressions.adapter = impressionAdapter
+        impressionAdapter.updateImpressions(impressionsList)
     }
     private fun getGame(id : Int){
         val scope = CoroutineScope(Job() + Dispatchers.Main)
@@ -100,7 +110,7 @@ class GameDetailsFragment : Fragment() {
             }
         }
     }
-    fun onSuccess(game : Game){
+    suspend fun onSuccess(game : Game){
         val toast = Toast.makeText(context, "id done", Toast.LENGTH_SHORT)
         toast.show()
         this.game = game

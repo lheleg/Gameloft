@@ -5,7 +5,13 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import ba.etf.rma23.projekat.data.repositories.GameReview
+import ba.etf.rma23.projekat.data.repositories.GameReviewsRepository
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,5 +39,12 @@ class MainActivity : AppCompatActivity() {
             }
             navController1.navigate(R.id.gameDetailsItem, bundle)
         }
+
+
+        val scope = CoroutineScope(Job() + Dispatchers.Main)
+        scope.launch{
+            val result = GameReviewsRepository.sendReview(this@MainActivity,GameReview(3,null,100))
+        }
+
     }
 }

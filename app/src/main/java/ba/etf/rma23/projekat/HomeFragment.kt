@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView
 import ba.etf.rma23.projekat.data.repositories.AccountGamesRepository
 import ba.etf.rma23.projekat.data.repositories.AccountGamesRepository.getAge
 import ba.etf.rma23.projekat.data.repositories.AccountGamesRepository.setAge
+import ba.etf.rma23.projekat.data.repositories.GameReview
+import ba.etf.rma23.projekat.data.repositories.GameReviewsRepository
 import ba.etf.rma23.projekat.data.repositories.GamesRepository
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.*
@@ -75,6 +77,7 @@ class HomeFragment : Fragment() {
         getFavorites()
         gamesAdapter = GameListAdapter(arrayListOf()) { game -> showGameDetails(game) }
         games.adapter = gamesAdapter
+
         return view
     }
     private fun onClick() {

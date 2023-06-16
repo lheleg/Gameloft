@@ -40,4 +40,17 @@ interface Api {
         @Path("gid") gid: Int,
         @Path("aid") aid: String = getHash()
     ): Response<GetRemoveResponse>
+
+    @Headers("Content-Type: application/json")
+    @POST("account/{aid}/game/{gid}/gamereview")
+    suspend fun sendReview(
+        @Body body : RequestBody,
+        @Path("gid") gid: Int,
+        @Path("aid") aid: String = getHash()
+    ): Response<GameReview>
+
+    @GET("/game/{gid}/gamereviews")
+    suspend fun getReviewsForGame(
+        @Path("gid") gid: Int
+    ): Response<List<GameReview>>
 }
