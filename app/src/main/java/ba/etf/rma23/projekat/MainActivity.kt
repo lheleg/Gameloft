@@ -1,5 +1,6 @@
 package ba.etf.rma23.projekat
 
+import android.app.PendingIntent.getActivity
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

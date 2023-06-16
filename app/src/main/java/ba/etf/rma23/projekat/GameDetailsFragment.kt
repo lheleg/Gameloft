@@ -5,14 +5,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.RatingBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ba.etf.rma23.projekat.data.repositories.AccountGamesRepository
+import ba.etf.rma23.projekat.data.repositories.GameReview
 import ba.etf.rma23.projekat.data.repositories.GameReviewsRepository
 import ba.etf.rma23.projekat.data.repositories.GamesRepository
 import com.bumptech.glide.Glide
@@ -37,6 +41,9 @@ class GameDetailsFragment : Fragment() {
     private var impressionsList = ArrayList<UserImpression>()
     private lateinit var save_button: ImageButton
     private lateinit var unsave_button: ImageButton
+    private lateinit var ratingBar: RatingBar
+    private lateinit var submitRating: Button
+    private lateinit var reviewEditText: EditText
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -53,6 +60,9 @@ class GameDetailsFragment : Fragment() {
         impressions = view.findViewById(R.id.user_impression_list)
         save_button = view.findViewById(R.id.search_button)
         unsave_button = view.findViewById(R.id.unsave_button)
+        ratingBar = view.findViewById(R.id.simple_rating_bar)
+        submitRating = view.findViewById(R.id.button)
+        reviewEditText = view.findViewById<EditText>(R.id.reviewEditText)
         impressions.layoutManager = LinearLayoutManager(
             activity,
             LinearLayoutManager.VERTICAL,
@@ -68,8 +78,15 @@ class GameDetailsFragment : Fragment() {
             unsaveThisGame(game)
         }
 
-
-
+        var rating: Int? = null
+        var review: String? = null
+        submitRating?.setOnClickListener {
+            rating = ratingBar.rating.toInt()
+            review = reviewEditText.text.toString()
+            if(review == "") review = null
+            if(rating == 0) rating = null
+            context?.let { it1 -> makeNewReview(it1,GameReview(rating,review,game.id!!)) }
+        }
 
         return view;
     }
@@ -127,7 +144,6 @@ class GameDetailsFragment : Fragment() {
             if (result?.id == game?.id)
                 onSuccess1()
             else onError1()
-
         }
     }
     fun onSuccess1(){
@@ -154,5 +170,11 @@ class GameDetailsFragment : Fragment() {
     fun onError2() {
         val toast = Toast.makeText(context, "Game deleting error", Toast.LENGTH_SHORT)
         toast.show()
+    }
+    private fun makeNewReview(context: Context,gameReview: GameReview){
+        val scope = CoroutineScope(Job() + Dispatchers.Main)
+        scope.launch{
+            GameReviewsRepository.sendReview(context,gameReview)
+        }
     }
 }

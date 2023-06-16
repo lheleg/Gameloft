@@ -145,7 +145,30 @@
                     android:text="TextView"
                     android:textAlignment="center"
                     android:textSize="16sp" />
+                <EditText
+                    android:id="@+id/reviewEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    android:hint="Write your review here"
+                    android:inputType="text"/>
+                <LinearLayout
+                    android:id="@+id/detailsLinear2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="20dp">
+                    <RatingBar
+                        android:id="@+id/simple_rating_bar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
 
+                    <Button
+                        android:id="@+id/button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Submit Rating" />
+                </LinearLayout>
             </LinearLayout>
 
 
