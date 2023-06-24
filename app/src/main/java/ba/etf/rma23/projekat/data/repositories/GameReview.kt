@@ -11,7 +11,8 @@ data class GameReview (
     @ColumnInfo(name = "review") @SerializedName("review")  var review: String?,
     @ColumnInfo(name = "igdb_id") @SerializedName("GameId")  var igdb_id: Int,
     @ColumnInfo(name = "online") @SerializedName("online")   var online: Boolean = true,
-    @SerializedName("student")   var user: String? = null,
+    @SerializedName("student")   var student: String? = null,
+    @SerializedName("timestamp")   var timestamp: String? = null,
     @PrimaryKey(autoGenerate = true)
     @SerializedName("id") var id: Int = 0
 )

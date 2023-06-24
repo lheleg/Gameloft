@@ -10,7 +10,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 object GameReviewsRepository {
     suspend fun sendReview(context: Context, gameReview: GameReview): Boolean{
         return withContext(Dispatchers.IO) {
-
+            try {
             val savedGames = AccountGamesRepository.getSavedGames()
             var gameSaved = false
             for( game in  savedGames){
@@ -28,7 +28,7 @@ object GameReviewsRepository {
                     "    \"review\": "+review+",\n" +
                     "    \"rating\": "+gameReview.rating+"\n" +
                     "}"
-            try {
+
                 val response = AccountApiConfig.retrofit.sendReview(
                     body.toRequestBody("application/json".toMediaType()),
                     gameReview.igdb_id

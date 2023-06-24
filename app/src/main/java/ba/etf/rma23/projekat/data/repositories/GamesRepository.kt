@@ -46,7 +46,9 @@ object GamesRepository {
     suspend fun getGameById(id : Int): Game?{
         return withContext(Dispatchers.IO) {
             val body =
-                "fields id,name,platforms.name,involved_companies.company.name,release_dates.human,rating,cover.url,genres.name,summary,age_ratings.rating,age_ratings.category; where id = $id;"
+                "fields id,name,platforms.name,involved_companies.company.name," +
+                        "release_dates.human,rating,cover.url,genres.name,summary," +
+                        "age_ratings.rating,age_ratings.category; where id = $id;"
             val response = IGDBApiConfig.retrofit.getGamesById(
                 "vtfllttx3gwlzv55oajmcrbsswxpl0",
                 "Bearer ffhb27f1jylitms082osnbkxwvvkfs",

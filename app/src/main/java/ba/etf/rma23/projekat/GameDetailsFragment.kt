@@ -80,6 +80,7 @@ class GameDetailsFragment : Fragment() {
 
         var rating: Int? = null
         var review: String? = null
+
         submitRating?.setOnClickListener {
             rating = ratingBar.rating.toInt()
             review = reviewEditText.text.toString()
@@ -101,9 +102,9 @@ class GameDetailsFragment : Fragment() {
         description.text = game.description
         for (review in game.id?.let { GameReviewsRepository.getReviewsForGame(it) }!!){
             if (review.rating != null)
-                impressionsList.add(UserRating(review.user!!,0,review.rating!!))
+                impressionsList.add(UserRating(review.student!!,0,review.rating!!))
             if (review.review != null)
-                impressionsList.add(UserReview(review.user!!,0, review.review!!))
+                impressionsList.add(UserReview(review.student!!,0, review.review!!))
         }
         val context: Context = cover.getContext()
         var id = 0;

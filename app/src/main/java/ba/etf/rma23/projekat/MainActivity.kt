@@ -42,10 +42,9 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        val scope = CoroutineScope(Job() + Dispatchers.Main)
+      /*  val scope = CoroutineScope(Job() + Dispatchers.Main)
         scope.launch{
             val result = GameReviewsRepository.sendReview(this@MainActivity,GameReview(3,null,100))
-        }
-
+        }*/
     }
 }
