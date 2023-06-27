@@ -1,9 +1,6 @@
 package ba.etf.rma23.projekat.data.repositories
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 
 @Dao
 interface GameReviewDAO {
@@ -13,6 +10,9 @@ interface GameReviewDAO {
     suspend fun getAllOffline(): List<GameReview>
     @Insert
     suspend fun insertAll(vararg review: GameReview)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertGameReview(gameReview: GameReview)
     @Query("UPDATE GameReview SET online = 1 where :igdb_id")
     suspend fun updateOnline(igdb_id: Int)
 }

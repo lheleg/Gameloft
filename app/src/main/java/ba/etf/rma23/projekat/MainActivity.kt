@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import ba.etf.rma23.projekat.data.repositories.AppDatabase
 import ba.etf.rma23.projekat.data.repositories.GameReview
 import ba.etf.rma23.projekat.data.repositories.GameReviewsRepository
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -41,10 +42,12 @@ class MainActivity : AppCompatActivity() {
             navController1.navigate(R.id.gameDetailsItem, bundle)
         }
 
-
-      /*  val scope = CoroutineScope(Job() + Dispatchers.Main)
+        //naredni dio je dodan jer se testovi nisu mogli pokrenuti ukoliko baza nije inicijalizovana, odnosno ukoliko je prazna
+        var db = AppDatabase.getInstance(this)
+        val gameReview = GameReview(3, null, 100)
+        val scope = CoroutineScope(Job() + Dispatchers.Main)
         scope.launch{
-            val result = GameReviewsRepository.sendReview(this@MainActivity,GameReview(3,null,100))
-        }*/
+            db!!.gameReviewDao().insertGameReview(gameReview)
+        }
     }
 }

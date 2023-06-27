@@ -44,6 +44,7 @@ class GameDetailsFragment : Fragment() {
     private lateinit var ratingBar: RatingBar
     private lateinit var submitRating: Button
     private lateinit var reviewEditText: EditText
+    private var currentGameId: Int? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -69,6 +70,7 @@ class GameDetailsFragment : Fragment() {
             false
         )
         arguments?.getInt("title")?.let {
+            currentGameId = it
             getGame(it)
         }
         save_button.setOnClickListener{
@@ -100,6 +102,7 @@ class GameDetailsFragment : Fragment() {
         publisher.text = game.publisher
         genre.text = game.genre
         description.text = game.description
+        impressionsList = ArrayList()
         for (review in game.id?.let { GameReviewsRepository.getReviewsForGame(it) }!!){
             if (review.rating != null)
                 impressionsList.add(UserRating(review.student!!,0,review.rating!!))
