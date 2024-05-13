@@ -5,9 +5,10 @@ import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.*
 
+String bearerToken = System.getenv("BEARER_TOKEN");
 
 interface Api {
-    @Headers("Client-ID: vtfllttx3gwlzv55oajmcrbsswxpl0", "Authorization: Bearer ffhb27f1jylitms082osnbkxwvvkfs", "Content_Type: application/json")
+    @Headers("Client-ID: vtfllttx3gwlzv55oajmcrbsswxpl0", "Authorization: Bearer "+bearerToken, "Content_Type: application/json")
 
     @GET("games/")
     suspend fun getGamesByName(
